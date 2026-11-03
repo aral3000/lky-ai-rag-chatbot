@@ -11,6 +11,20 @@ import math
 from typing import List, Dict, Any, Tuple
 import numpy as np
 
+STOP_WORDS = {
+    "a", "about", "above", "after", "again", "against", "all", "am", "an", "and", "any", "are",
+    "as", "at", "be", "because", "been", "before", "being", "below", "between", "both", "but",
+    "by", "could", "did", "do", "does", "doing", "down", "during", "each", "few", "for", "from",
+    "further", "had", "has", "have", "having", "he", "her", "here", "hers", "herself", "him",
+    "himself", "his", "how", "i", "if", "in", "into", "is", "it", "its", "itself", "me", "more",
+    "most", "my", "myself", "no", "nor", "not", "of", "off", "on", "once", "only", "or", "other",
+    "ought", "our", "ours", "ourselves", "out", "over", "own", "same", "she", "should", "so",
+    "some", "such", "than", "that", "the", "their", "theirs", "them", "themselves", "then",
+    "there", "these", "they", "this", "those", "through", "to", "too", "under", "until", "up",
+    "very", "was", "we", "were", "what", "when", "where", "which", "while", "who", "whom",
+    "why", "with", "would", "you", "your", "yours", "yourself", "yourselves"
+}
+
 
 class LKYVectorStore:
     """
@@ -27,9 +41,13 @@ class LKYVectorStore:
         if corpus_path and os.path.exists(corpus_path):
             self.load_corpus(corpus_path)
 
-    def _tokenize(self, text: str) -> List[str]:
-        """Tokenize text into lowercase alphanumeric words."""
-        return re.findall(r"\b[a-zA-Z0-9_-]{2,}\b", text.lower())
+    def _tokenize(self, text: str, filter_stops: bool = True) -> List[str]:
+        """Tokenize text into lowercase alphanumeric words, filtering stop words."""
+        raw_tokens = re.findall(r"\b[a-zA-Z0-9_-]{2,}\b", text.lower())
+        if filter_stops:
+            filtered = [t for t in raw_tokens if t not in STOP_WORDS]
+            return filtered if filtered else raw_tokens
+        return raw_tokens
 
     def load_corpus(self, corpus_path: str):
         """Loads and indexes JSON corpus."""
@@ -42,7 +60,7 @@ class LKYVectorStore:
 
         for doc in self.documents:
             full_text = f"{doc.get('title', '')} {doc.get('theme', '')} {doc.get('content', '')}"
-            tokens = set(self._tokenize(full_text))
+            tokens = set(self._tokenize(full_text, filter_stops=True))
             doc_tokens.append(tokens)
             for t in tokens:
                 df[t] = df.get(t, 0) + 1
@@ -51,6 +69,9 @@ class LKYVectorStore:
         self.vocabulary = {t: i for i, t in enumerate(sorted(df.keys()))}
         n_docs = len(self.documents)
         vocab_size = len(self.vocabulary)
+
+        if vocab_size == 0 or n_docs == 0:
+            return
 
         # Calculate IDF: log((N + 1) / (df + 1)) + 1
         self.idf = np.zeros(vocab_size, dtype=np.float32)
@@ -61,7 +82,7 @@ class LKYVectorStore:
         self.doc_vectors = np.zeros((n_docs, vocab_size), dtype=np.float32)
         for i, doc in enumerate(self.documents):
             full_text = f"{doc.get('title', '')} {doc.get('theme', '')} {doc.get('content', '')}"
-            tokens = self._tokenize(full_text)
+            tokens = self._tokenize(full_text, filter_stops=True)
             for t in tokens:
                 if t in self.vocabulary:
                     self.doc_vectors[i, self.vocabulary[t]] += 1.0
@@ -80,19 +101,24 @@ class LKYVectorStore:
         if len(self.documents) == 0 or len(self.vocabulary) == 0:
             return []
 
-        tokens = self._tokenize(query)
+        tokens = self._tokenize(query, filter_stops=True)
         q_vec = np.zeros(len(self.vocabulary), dtype=np.float32)
+        matched_any = False
         for t in tokens:
             if t in self.vocabulary:
                 q_vec[self.vocabulary[t]] += 1.0
+                matched_any = True
+
+        if not matched_any:
+            # No vocabulary overlap found
+            return []
 
         q_vec *= self.idf
         q_norm = np.linalg.norm(q_vec)
         if q_norm > 0:
             q_vec /= q_norm
         else:
-            # Fallback if no exact vocab hit
-            return [(self.documents[0], 0.1)]
+            return []
 
         # Vectorized dot product for all documents simultaneously
         scores = np.dot(self.doc_vectors, q_vec)
@@ -102,7 +128,7 @@ class LKYVectorStore:
         results = []
         for idx in ranked_indices[:top_k]:
             score = float(scores[idx])
-            if score >= min_score or len(results) == 0:
+            if score >= min_score:
                 results.append((self.documents[idx], round(score, 4)))
 
         return results
@@ -110,7 +136,7 @@ class LKYVectorStore:
     def format_retrieved_context(self, matches: List[Tuple[Dict[str, Any], float]]) -> str:
         """Formats retrieved documents into grounded citations for LLM prompt context."""
         if not matches:
-            return "No historical speeches matched this exact query."
+            return "No historical speeches met the relevance threshold for this query."
 
         context_blocks = []
         for i, (doc, score) in enumerate(matches, 1):

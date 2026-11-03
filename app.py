@@ -8,7 +8,7 @@ Author: M. Athallah Rafif Aldera, S.Kom.
 import os
 import streamlit as st
 from rag_engine import LKYVectorStore
-from llm_client import generate_lky_response, LKY_SYSTEM_PROMPT
+from llm_client import generate_lky_response, LKY_SYSTEM_PROMPT, HAS_LOCAL_VAULT
 
 # Streamlit Page Config
 st.set_page_config(
@@ -62,18 +62,28 @@ def get_vector_store():
 
 store = get_vector_store()
 
+# Provider options depending on local vault availability
+provider_options = []
+if HAS_LOCAL_VAULT:
+    provider_options.append("Local LLM Vault (Auto-Failover: Groq / SambaNova / Cohere)")
+provider_options.extend([
+    "Demo Mode (Offline - Grounded Persona Engine)",
+    "Google Gemini (gemini-1.5-flash)",
+    "OpenAI (gpt-4o-mini)"
+])
+
 # Sidebar Setup
 with st.sidebar:
     st.markdown("### ⚙️ Engine Settings")
     model_provider = st.selectbox(
         "Model Provider",
-        ["Demo Mode (Offline - Grounded Synthesis)", "Google Gemini (gemini-1.5-flash)", "OpenAI (gpt-4o-mini)"],
+        provider_options,
         index=0
     )
     api_key = st.text_input(
-        "API Key (Optional for Demo Mode)",
+        "API Key (Optional for Vault & Demo Mode)",
         type="password",
-        help="Leave blank to use the deterministic offline persona synthesis engine."
+        help="Leave blank to use Local LLM Vault or offline grounded persona synthesis."
     )
     
     st.markdown("---")
@@ -85,28 +95,45 @@ with st.sidebar:
     st.markdown("### 📚 Knowledge Corpus Stats")
     st.markdown(f"- **Indexed Documents**: {len(store.documents)}")
     st.markdown(f"- **Unique Vocabulary Terms**: {len(store.vocabulary)}")
+    st.markdown(f"- **Local LLM Vault**: {'✅ Connected' if HAS_LOCAL_VAULT else '❌ Offline'}")
     st.markdown(f"- **Primary Focus**: Singapore Housing (HDB), Economy & AI")
     
     st.markdown("---")
+    if st.button("🗑️ Clear Conversation", use_container_width=True):
+        st.session_state.chat_history = [
+            {
+                "role": "assistant",
+                "content": "I am Lee Kuan Yew. In statecraft and nation-building, sentimentality is a luxury no viable system can afford. You may ask me about urban planning, public housing, economic transformation, technological adaptation, or governance strategy.",
+                "citations": []
+            }
+        ]
+        st.rerun()
+
     st.caption("Developed by **M. Athallah Rafif Aldera, S.Kom.** for 99 Group Assessment.")
 
 # Main Interface Header
 st.markdown('<h1 class="main-header">🦁 What Would Lee Kuan Yew Do?</h1>', unsafe_allow_html=True)
 st.markdown('<p class="sub-header">Grounded RAG Conversational AI Persona trained on Lee Kuan Yew\'s Speeches, HDB Housing Policies & Memoirs</p>', unsafe_allow_html=True)
 
+# Pending Query State
+if "pending_query" not in st.session_state:
+    st.session_state.pending_query = None
+
 # Preset Quick-Prompt Buttons
 st.markdown("**Quick Prompts (Click to explore):**")
 c1, c2, c3 = st.columns(3)
-preset_query = None
 with c1:
     if st.button("🏢 HDB & Public Home Ownership", use_container_width=True):
-        preset_query = "Why did you prioritize public home ownership through HDB and CPF over public rental housing?"
+        st.session_state.pending_query = "Why did you prioritize public home ownership through HDB and CPF over public rental housing?"
+        st.rerun()
 with c2:
     if st.button("🤖 AI & Technological Disruption", use_container_width=True):
-        preset_query = "How should leaders and nations adapt to artificial intelligence and automation without causing massive unemployment?"
+        st.session_state.pending_query = "How should leaders and nations adapt to artificial intelligence and automation without causing massive unemployment?"
+        st.rerun()
 with c3:
     if st.button("⚖️ Meritocracy & Anti-Corruption", use_container_width=True):
-        preset_query = "What is your stance on eliminating corruption and ensuring meritocratic leadership in governance?"
+        st.session_state.pending_query = "What is your stance on eliminating corruption and ensuring meritocratic leadership in governance?"
+        st.rerun()
 
 # Chat History State
 if "chat_history" not in st.session_state:
@@ -130,14 +157,18 @@ for msg in st.session_state.chat_history:
                     st.markdown(f"> \"{doc.get('content')}\"")
                     st.divider()
 
-# Input Dispatcher
-active_query = preset_query or st.chat_input("Enter your question for Lee Kuan Yew...")
+# Unconditional Chat Input at root level
+user_chat = st.chat_input("Enter your question for Lee Kuan Yew...")
+
+# Dispatch Active Query
+active_query = user_chat or st.session_state.pending_query
 
 if active_query:
-    # Append User Message
+    # Clear pending state immediately
+    st.session_state.pending_query = None
+
+    # Append User Message to history
     st.session_state.chat_history.append({"role": "user", "content": active_query, "citations": []})
-    with st.chat_message("user"):
-        st.markdown(active_query)
 
     # Execute Vector Search & Generation
     with st.chat_message("assistant"):
@@ -152,20 +183,11 @@ if active_query:
                 api_key=api_key,
                 provider=model_provider
             )
-            
-            st.markdown(response)
-            
-            # Display Citations in UI
-            if retrieved:
-                with st.expander(f"📚 Retrieved Historical Sources ({len(retrieved)} excerpts)"):
-                    for doc, score in retrieved:
-                        st.markdown(f"**{doc.get('title')} ({doc.get('year')})** — `Relevance: {score:.2f}`")
-                        st.markdown(f"*Source: {doc.get('source')}*")
-                        st.markdown(f"> \"{doc.get('content')}\"")
-                        st.divider()
 
-        st.session_state.chat_history.append({
-            "role": "assistant",
-            "content": response,
-            "citations": retrieved
-        })
+    # Append Assistant Message to history
+    st.session_state.chat_history.append({
+        "role": "assistant",
+        "content": response,
+        "citations": retrieved
+    })
+    st.rerun()

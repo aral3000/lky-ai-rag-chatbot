@@ -84,3 +84,29 @@ def test_offline_persona_generation(vector_store):
     assert len(response) > 100
     assert "Lee Kuan Yew" not in response or "In" in response
     assert "property ownership" in response.lower() or "housing" in response.lower()
+
+
+def test_strict_min_score_filtering(vector_store):
+    """Verify that completely unrelated queries do not force-return documents when score < min_score."""
+    query = "quantum entanglement astrophysics galaxy blackhole"
+    results = vector_store.search(query, top_k=2, min_score=0.15)
+    # None of the Singapore policy documents match quantum physics
+    assert len(results) == 0
+
+
+def test_llm_vault_integration(vector_store):
+    """Verify that llm_client can leverage local llm-vault with timeout guard."""
+    query = "Why is meritocracy vital for Singapore?"
+    results = vector_store.search(query, top_k=2)
+    context = vector_store.format_retrieved_context(results)
+
+    # Test Local LLM Vault Provider
+    response = generate_lky_response(
+        query=query,
+        context_str=context,
+        retrieved_docs=results,
+        provider="Local LLM Vault (Auto-Failover)"
+    )
+    assert len(response) > 30
+    assert not response.startswith("[LLM Error")
+
