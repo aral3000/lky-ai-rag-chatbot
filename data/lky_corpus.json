@@ -1,0 +1,66 @@
+[
+  {
+    "id": "hdb_01",
+    "theme": "Housing & Real Estate",
+    "title": "Home Ownership for the People Scheme",
+    "year": 1964,
+    "source": "Lee Kuan Yew, Speech at National Trades Union Congress, 1964",
+    "content": "My primary conviction was that citizens must own a stake in their country. A man who owns his home, his flat, has a personal interest in the stability and defense of his nation. We established the Housing & Development Board (HDB) not merely as a public landlord, but to ensure that 90% of our population could own their homes through the Central Provident Fund (CPF). When riots occur, a tenant might join the destruction, but a homeowner stands on his balcony with a stick to protect his property. Property ownership anchors social stability."
+  },
+  {
+    "id": "hdb_02",
+    "theme": "Housing & Real Estate",
+    "title": "Urban Density, Land Reclamation & Garden City",
+    "year": 1978,
+    "source": "Lee Kuan Yew, Parliamentary Address on Urban Master Planning, 1978",
+    "content": "Singapore is 700 square kilometers with no natural resources. Every square meter of land must be planned with relentless discipline. We reclaimed land from the sea, built high-density high-rise housing estates, and integrated green parks within walking distance. We mandated tree planting and clean green corridors because a clean, green, orderly city signals first-world efficiency to global investors. High urban density requires supreme civil engineering and strict maintenance standards."
+  },
+  {
+    "id": "hdb_03",
+    "theme": "Housing & Real Estate",
+    "title": "Ethnic Integration Policy in Public Housing",
+    "year": 1989,
+    "source": "Lee Kuan Yew, Address on Social Cohesion in HDB Neighborhoods, 1989",
+    "content": "Left to natural market forces, ethnic groups will cluster into racial enclaves. We instituted the Ethnic Integration Policy (EIP) quotas in every HDB block and neighborhood. Chinese, Malays, Indians, and Eurasians must live on the same corridors, shop at the same wet markets, and let their children play in the same void decks. Social cohesion is not an accident; it is the deliberate outcome of architectural and demographic policy."
+  },
+  {
+    "id": "econ_01",
+    "theme": "Economy & Industry",
+    "title": "Leapfrogging the Region via Multinational Corporations (MNCs)",
+    "year": 1970,
+    "source": "Lee Kuan Yew, Address to the International Chamber of Commerce, 1970",
+    "content": "When we were separated in 1965, conventional wisdom said we were non-viable. We had no hinterland and no natural resources. We decided to leapfrog our neighbors and plug Singapore directly into the advanced industrial economies of America, Europe, and Japan. We invited multinational corporations (MNCs) to establish high-value manufacturing, petrochemical refineries, and semiconductor fabrication here. We offered absolute political stability, honest administration, efficient infrastructure, and disciplined labor."
+  },
+  {
+    "id": "econ_02",
+    "theme": "Economy & Industry",
+    "title": "Zero Tolerance for Corruption & The Rule of Law",
+    "year": 1986,
+    "source": "Lee Kuan Yew, Speech on the Prevention of Corruption Act, 1986",
+    "content": "If you want international capital, you must guarantee predictability and the rule of law. The moment corruption enters the civil service or the judiciary, confidence evaporates and capital flees. We made corruption an unaffordable risk through the Corrupt Practices Investigation Bureau (CPIB) and paid ministers competitive market salaries to attract top talent and eliminate financial compromise. An honest government is Singapore's ultimate competitive moat."
+  },
+  {
+    "id": "tech_01",
+    "theme": "Technology & Human Capital",
+    "title": "Lifelong Education & Technological Adaptation",
+    "year": 1999,
+    "source": "Lee Kuan Yew, National Day Rally Speech on the Knowledge Economy, 1999",
+    "content": "The world does not owe us a living. Technology moves relentlessly; automation, computing, and now artificial intelligence will reshape global labor. If our workforce relies on old skills, we will be marginalized. Every citizen must embrace lifelong learning and continuous retraining. We do not fear automation; we harness technological disruption to multiply our per-capita productivity. Talent and continuous upgrading are the only natural resources Singapore has."
+  },
+  {
+    "id": "gov_01",
+    "theme": "Meritocracy & Governance",
+    "title": "Ruthless Meritocracy in Leadership",
+    "year": 1971,
+    "source": "Lee Kuan Yew, Address on Talent Recruitment in the Public Sector, 1971",
+    "content": "In government as in business, second-rate leadership leads to third-rate management and ultimate collapse. We scour the schools, universities, and private sector for the sharpest analytical minds, regardless of family background or race, and grant them top state scholarships. Meritocracy ensures that authority is earned through competence and integrity, not patronage or connections."
+  },
+  {
+    "id": "geo_01",
+    "theme": "Geopolitics & Strategy",
+    "title": "Pragmatic Realism in a Dangerous World",
+    "year": 2005,
+    "source": "Lee Kuan Yew, Memoirs & Foreign Policy Lectures, 2005",
+    "content": "A small nation cannot afford foreign policy dogmatism or moral posturing. We must see the world as it is, not as we wish it to be. We maintain deep strategic defense relations with major powers, invest heavily in the Singapore Armed Forces (SAF) as a deterrent poison shrimp, and remain an indispensable neutral hub for trade, maritime logistics, and international diplomacy."
+  }
+]
