@@ -23,7 +23,7 @@ Dirancang untuk **99 Group AI Aptitude Challenge (Bagian 3)**, sistem ini mencak
 3. **Evaluasi Kuantitatif RAG (`eval_rag.py`)**:
    - Mengukur **Hit Rate@1 (`100%`)**, **Hit Rate@3 (`100%`)**, **MRR (`1.0000`)**, **Out-of-Domain Rejection Rate (`100%`)**, dan **Citation Faithfulness (`100%`)**.
 4. **Multi-Provider & Mesin Persona Offline (`llm_client.py`)**:
-   - Mendukung **Google Gemini (`gemini-1.5-flash`)**, **OpenAI (`gpt-4o-mini`)**, failover multi-provider via variabel lingkungan `LLM_VAULT_DIR`, serta mode offline deterministik tanpa API key.
+   - Mendukung **Google Gemini (`gemini-3-flash-preview` + `gemini-3.5-flash-lite` fallback)**, **OpenAI (`gpt-4o-mini`)**, failover multi-provider via variabel lingkungan `LLM_VAULT_DIR`, serta mode offline deterministik tanpa API key.
 
 ---
 
