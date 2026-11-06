@@ -95,8 +95,9 @@ with st.sidebar:
     st.markdown("### 📚 Knowledge Corpus Stats")
     st.markdown(f"- **Indexed Documents**: {len(store.documents)}")
     st.markdown(f"- **Unique Vocabulary Terms**: {len(store.vocabulary)}")
-    st.markdown(f"- **Local LLM Vault**: {'✅ Connected' if HAS_LOCAL_VAULT else '❌ Offline'}")
-    st.markdown(f"- **Primary Focus**: Singapore Housing (HDB), Economy & AI")
+    if HAS_LOCAL_VAULT:
+        st.markdown("- **Local LLM Vault**: Connected")
+    st.markdown("- **Primary Focus**: Singapore Housing (HDB), Economy & Geopolitics")
     
     st.markdown("---")
     if st.button("🗑️ Clear Conversation", use_container_width=True):
@@ -152,7 +153,7 @@ for msg in st.session_state.chat_history:
         if msg.get("citations"):
             with st.expander(f"📚 Retrieved Historical Sources ({len(msg['citations'])} excerpts)"):
                 for doc, score in msg["citations"]:
-                    st.markdown(f"**{doc.get('title')} ({doc.get('year')})** — `Relevance: {score:.2f}`")
+                    st.markdown(f"**{doc.get('title')} ({doc.get('year')})** | `Relevance: {score:.2f}`")
                     st.markdown(f"*Source: {doc.get('source')}*")
                     st.markdown(f"> \"{doc.get('content')}\"")
                     st.divider()

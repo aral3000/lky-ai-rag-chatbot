@@ -1,0 +1,145 @@
+{
+  "corpus_size": 12,
+  "vocabulary_size": 424,
+  "in_domain_queries": 12,
+  "out_of_domain_queries": 3,
+  "metrics": {
+    "hit_rate_at_1": 1.0,
+    "hit_rate_at_3": 1.0,
+    "mrr": 1.0,
+    "ood_rejection_rate": 1.0,
+    "citation_faithfulness_rate": 1.0
+  },
+  "details": [
+    {
+      "query": "How did Singapore enable 90% public home ownership through HDB flats?",
+      "expected_id": "hdb_01",
+      "retrieved_ids": [
+        "hdb_01",
+        "hdb_03",
+        "cpf_01"
+      ],
+      "top_score": 0.5285,
+      "rank": 1,
+      "citation_faithful": true
+    },
+    {
+      "query": "Why did you plant trees and reclaim land in a dense high-rise city?",
+      "expected_id": "hdb_02",
+      "retrieved_ids": [
+        "hdb_02",
+        "water_01"
+      ],
+      "top_score": 0.396,
+      "rank": 1,
+      "citation_faithful": true
+    },
+    {
+      "query": "How do you prevent racial enclaves in public housing neighborhoods?",
+      "expected_id": "hdb_03",
+      "retrieved_ids": [
+        "hdb_03",
+        "hdb_01",
+        "cpf_01"
+      ],
+      "top_score": 0.3005,
+      "rank": 1,
+      "citation_faithful": true
+    },
+    {
+      "query": "How can a small island with no hinterland industrialize using MNCs?",
+      "expected_id": "econ_01",
+      "retrieved_ids": [
+        "econ_01",
+        "geo_01",
+        "water_01"
+      ],
+      "top_score": 0.5152,
+      "rank": 1,
+      "citation_faithful": true
+    },
+    {
+      "query": "How do you eradicate civil service corruption and enforce rule of law?",
+      "expected_id": "econ_02",
+      "retrieved_ids": [
+        "econ_02"
+      ],
+      "top_score": 0.4845,
+      "rank": 1,
+      "citation_faithful": true
+    },
+    {
+      "query": "Should governments fund unemployment handouts or compulsory CPF savings?",
+      "expected_id": "cpf_01",
+      "retrieved_ids": [
+        "cpf_01",
+        "hdb_01"
+      ],
+      "top_score": 0.5996,
+      "rank": 1,
+      "citation_faithful": true
+    },
+    {
+      "query": "Why choose English as the working language alongside Mother Tongue?",
+      "expected_id": "lang_01",
+      "retrieved_ids": [
+        "lang_01"
+      ],
+      "top_score": 0.6215,
+      "rank": 1,
+      "citation_faithful": true
+    },
+    {
+      "query": "How should workers adapt to automation and artificial intelligence?",
+      "expected_id": "tech_01",
+      "retrieved_ids": [
+        "tech_01"
+      ],
+      "top_score": 0.3098,
+      "rank": 1,
+      "citation_faithful": true
+    },
+    {
+      "query": "How should a country recruit and promote top talent into public leadership?",
+      "expected_id": "gov_01",
+      "retrieved_ids": [
+        "gov_01",
+        "hdb_01",
+        "econ_02"
+      ],
+      "top_score": 0.2051,
+      "rank": 1,
+      "citation_faithful": true
+    },
+    {
+      "query": "How did Singapore overcome water supply vulnerability with NEWater?",
+      "expected_id": "water_01",
+      "retrieved_ids": [
+        "water_01"
+      ],
+      "top_score": 0.5805,
+      "rank": 1,
+      "citation_faithful": true
+    },
+    {
+      "query": "How does a small state deter larger neighbors with a poison shrimp defense?",
+      "expected_id": "geo_01",
+      "retrieved_ids": [
+        "geo_01"
+      ],
+      "top_score": 0.258,
+      "rank": 1,
+      "citation_faithful": true
+    },
+    {
+      "query": "How should ASEAN balance the rise of China and American presence in Asia?",
+      "expected_id": "asean_01",
+      "retrieved_ids": [
+        "asean_01"
+      ],
+      "top_score": 0.3574,
+      "rank": 1,
+      "citation_faithful": true
+    }
+  ]
+}

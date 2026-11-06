@@ -12,10 +12,10 @@ import urllib.request
 import urllib.error
 from typing import Dict, Any, List, Tuple
 
-# Try attaching local LLM vault from workspace if available
-VAULT_DIR = r"c:\new era code\llm-vault"
+# Optional local LLM vault configured via environment variable
+VAULT_DIR = os.environ.get("LLM_VAULT_DIR", "").strip()
 HAS_LOCAL_VAULT = False
-if os.path.isdir(VAULT_DIR):
+if VAULT_DIR and os.path.isdir(VAULT_DIR):
     if VAULT_DIR not in sys.path:
         sys.path.insert(0, VAULT_DIR)
     try:
@@ -25,13 +25,13 @@ if os.path.isdir(VAULT_DIR):
         HAS_LOCAL_VAULT = False
 
 LKY_SYSTEM_PROMPT = """You are Lee Kuan Yew, Founding Prime Minister of Singapore (1923 - 2015).
-You respond to queries regarding leadership, urban planning, housing, economic development, education, and geopolitics strictly through your pragmatic, analytical, and visionary worldview.
+You respond to queries regarding leadership, urban planning, housing, economic development, education, technology, and geopolitics strictly through your pragmatic, analytical, and realistic worldview.
 
 Persona Directives:
-1. Tone: Pragmatic, decisive, articulate, realistic, and highly strategic. No sentimental platitudes.
-2. Core Ideology: Ruthless meritocracy, rule of law, long-term national viability, racial harmony, public home ownership (HDB/CPF), and zero tolerance for corruption.
-3. Grounding: When context sources are provided, reference the historical Singapore policies and experiences directly.
-4. Language: Formal, articulate English with crisp argumentation."""
+1. Tone: Pragmatic, direct, articulate, unsentimental, and strategic. Speak in first-person ("In 1964, when we...", "My view is clear:").
+2. Core Principles: Ruthless meritocracy, rule of law, long-term national viability, multiracial cohesion (EIP), asset-building home ownership (HDB/CPF) over consumption handouts, and zero tolerance for corruption (CPIB).
+3. Epistemic Grounding: Reference ONLY real historical Singapore policies and speech years (1959-2015) provided in the context. NEVER cite policies, agencies, or dates after March 2015, and NEVER invent fictional institutes or unverified statistics.
+4. Formatting: Write 180 to 280 words of crisp prose with numbered strategic points where helpful. Do NOT use CJK brackets, horizontal rules, or em-dashes."""
 
 
 def generate_lky_response(
@@ -56,14 +56,14 @@ def generate_lky_response(
         try:
             result = ask_llm(
                 prompt=prompt,
-                provider="auto",
+                provider="groq",
                 system_prompt=LKY_SYSTEM_PROMPT,
-                max_tokens=600,
+                max_tokens=4096,
                 temperature=0.3,
-                timeout=4.5,
+                timeout=18.0,
                 return_meta=True
             )
-            provider_tag = f"*[Synthesized via {result['provider'].upper()} ({result.get('model', '')}) in {result.get('latency', 0):.2f}s]*\n\n"
+            provider_tag = f"*[Synthesized via {result['provider'].upper()} ({result.get('model', '')}) in {result.get('latency_s', 0):.2f}s]*\n\n"
             return provider_tag + result["text"]
         except Exception as e:
             fallback = _offline_persona_synthesis(query, retrieved_docs)

@@ -1,120 +1,113 @@
-# 🦁 "What Would Lee Kuan Yew Do?" (LKY-AI)
+# "What Would Lee Kuan Yew Do?" (LKY-AI)
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-ff4b4b.svg)](https://streamlit.io/)
 [![NumPy](https://img.shields.io/badge/NumPy-Vector%20Store-013243.svg)](https://numpy.org/)
-[![Pytest](https://img.shields.io/badge/Tests-Pytest%20Passed-green.svg)](https://docs.pytest.org/)
+[![Tests](https://img.shields.io/badge/Tests-9%20Passed-green.svg)](test_rag.py)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Bahasa Indonesia](https://img.shields.io/badge/Language-Bahasa%20Indonesia-green.svg)](README_ID.md)
 
-> 📖 **Language**: **English** | [Versi Bahasa Indonesia](README_ID.md)
+> **Language**: **English** | [Versi Bahasa Indonesia](README_ID.md)
 
-An interactive, production-grade **Retrieval-Augmented Generation (RAG)** conversational AI chatbot grounded in the speeches, public records, and policy memoirs of **Lee Kuan Yew**, Founding Prime Minister of Singapore (1923–2015).
+An interactive **Retrieval-Augmented Generation (RAG)** conversational AI chatbot grounded in the speeches, public policy records, and memoirs of **Lee Kuan Yew**, Founding Prime Minister of Singapore (1923-2015).
 
-Originally developed for the **99 Group Graduate AI Assessment (Section 3)**, this engine demonstrates end-to-end AI software engineering: domain knowledge structuring, vectorized similarity search, citation verification, and strict persona prompt engineering—with specialized focus on Singapore's landmark **Housing & Development Board (HDB)** public home ownership and urban planning frameworks.
-
----
-
-## 📌 Key Engineering Highlights
-
-1. **Zero-Dependency Vector Store (`rag_engine.py`)**:
-   - Implements high-performance **TF-IDF + Cosine Similarity** vector search using pure **NumPy**.
-   - No external vector database network dependencies required; fast, deterministic, and fully reproducible in any deployment environment.
-2. **Specialized Singapore Housing & Urban Corpus (`data/lky_corpus.json`)**:
-   - Curated historical corpus covering **HDB Home Ownership for the People Scheme (1964)**, **Ethnic Integration Policy (EIP)**, **Urban Density & Land Reclamation**, **MNC Industrialization**, **Meritocracy**, and **Technological Adaptation**.
-3. **Exact Source Citation & Evidence Grounding**:
-   - Every generated response is linked to exact historical source speeches, displaying the excerpt title, delivery year, and mathematical cosine relevance score.
-4. **Multi-Provider & Deterministic Offline Fallback**:
-   - Plug-and-play support for **Google Gemini (gemini-1.5-flash)**, **OpenAI (gpt-4o-mini)**, and a **Grounded Offline Persona Synthesis Engine** that operates seamlessly without external API keys.
-5. **Automated Pytest Verification Suite (`test_rag.py`)**:
-   - 100% passing automated test suite verifying corpus integrity, HDB query routing, descending cosine ranking, and context synthesis.
+Built for the **99 Group AI Aptitude Challenge (Section 3)**, this engine implements domain corpus curation, vectorized TF-IDF + Cosine Similarity search in pure NumPy, source citation verification, quantitative RAG evaluation (`eval_rag.py`), and strict persona prompt engineering, with dedicated coverage of Singapore's **Housing & Development Board (HDB)** home ownership and urban planning policies.
 
 ---
 
-## 🏗️ System Architecture
+## Key Engineering Highlights
+
+1. **Zero-Database Vector Store (`rag_engine.py`)**:
+   - Implements smoothed **TF-IDF + L2-normalized Cosine Similarity** vector search using pure **NumPy**.
+   - Deterministic, sub-millisecond retrieval with zero external vector database dependencies.
+2. **12-Document Historical Policy Corpus (`data/lky_corpus.json`)**:
+   - Covers **HDB Home Ownership Scheme (1964)**, **Urban Density & Land Reclamation (1978)**, **Ethnic Integration Policy (1989)**, **MNC Industrialization (1970)**, **CPIB Anti-Corruption (1986)**, **CPF vs Welfare Entitlements (1972)**, **Bilingual Education (1966)**, **Lifelong Learning & Automation (1999)**, **Ruthless Meritocracy (1971)**, **NEWater Strategic Autonomy (2002)**, **SAF Poison Shrimp Deterrence (2005)**, and **US-China Balance in ASEAN (2009)**.
+3. **Quantitative RAG Evaluation Suite (`eval_rag.py`)**:
+   - Benchmarks **Hit Rate@1**, **Hit Rate@3**, **Mean Reciprocal Rank (MRR)**, **Out-of-Domain Rejection Rate**, and **Citation Faithfulness** across 12 in-domain policy queries and 3 adversarial out-of-domain trap queries.
+4. **Multi-Provider & Deterministic Offline Fallback (`llm_client.py`)**:
+   - Supports **Google Gemini (`gemini-1.5-flash`)**, **OpenAI (`gpt-4o-mini`)**, optional environment-configured multi-provider failover (`LLM_VAULT_DIR`), and an **Offline Grounded Persona Engine** that runs without API keys.
+5. **Automated Test Suite (`test_rag.py`)**:
+   - 9 passing automated unit and evaluation tests runnable with Python's built-in `unittest` or `pytest`.
+
+---
+
+## System Architecture
 
 ```text
-+---------------------+
-|   User Query /      | (e.g. "Why did Singapore prioritize HDB public home ownership?")
-|   Preset Prompt     |
-+---------------------+
-           |
-           v
-+---------------------+
-| Tokenizer & TF-IDF  | --> Normalized Query Vector q_vec
-| Vocabulary Engine   |
-+---------------------+
-           |
-           v
-+---------------------+
-| NumPy Vector Store  | --> Cosine Similarity: cos(θ) = (u · v) / (||u|| * ||v||)
-| (Top-k Retrieval)   | --> Filtered by Relevance Threshold (default: 0.05)
-+---------------------+
-           |
-           v
-+---------------------+
-| Grounded Context    | --> [Source #1]: HDB Home Ownership Scheme (1964) (Score: 0.42)
-| Formatter           |     Citation: Speech at NTUC, 1964
-+---------------------+
-           |
-           v
-+---------------------+
-| Multi-Model Router  | --> [Online]: Gemini 1.5 Flash / GPT-4o-mini
-| & Persona Engine    | --> [Offline]: Deterministic Strategic Synthesis
-+---------------------+
-           |
-           v
-+---------------------+
-| Streamlit UI Output | --> Authoritative Lee Kuan Yew response
-| with Live Citations |     + Expandable Source Accordion with Real Excerpts
-+---------------------+
++-----------------------+
+| User Query / Multi-   |  e.g. "How did Singapore achieve 90% home ownership?"
+| Turn Chat Input       |
++-----------------------+
+            |
+            v
++-----------------------+
+| Stopword-Filtered     |  --> Smoothed IDF: log((N + 1) / (df + 1)) + 1
+| TF-IDF Tokenizer      |  --> L2-Normalized Query Vector q_vec
++-----------------------+
+            |
+            v
++-----------------------+
+| NumPy Vector Store    |  --> Cosine Similarity: dot(doc_vectors, q_vec)
+| (Top-k + Threshold)   |  --> Rejects off-topic noise below min_score
++-----------------------+
+            |
+            v
++-----------------------+
+| Grounded Citation     |  --> [Source #1]: Home Ownership Scheme (1964) | Score: 0.38
+| Context Builder       |      Citation: Speech at NTUC, 1964
++-----------------------+
+            |
+            v
++-----------------------+
+| LLM / Offline Persona |  --> Online: Gemini / OpenAI / Groq
+| Dispatcher            |  --> Offline: Deterministic Grounded Synthesis
++-----------------------+
+            |
+            v
++-----------------------+
+| Streamlit Chat UI &   |  --> Pragmatic Lee Kuan Yew response
+| Evaluation Suite      |      + Expandable Source Excerpt Accordion
++-----------------------+
 ```
 
 ---
 
-## 🚀 Quick Start Guide
+## Quick Start
 
-### 1. Clone the Repository
 ```bash
 git clone https://github.com/aral3000/lky-ai-rag-chatbot.git
 cd lky-ai-rag-chatbot
-```
-
-### 2. Install Dependencies
-```bash
 pip install -r requirements.txt
-```
 
-### 3. Run Automated Pytest Suite
-```bash
-pytest test_rag.py -v
-```
-*Output: 6 passing unit tests verifying vector math, retrieval precision, and citation integrity.*
+# Run 9 unit + RAG evaluation tests (stdlib unittest or pytest)
+python -m unittest test_rag.py -v
 
-### 4. Launch Streamlit Web Application
-```bash
+# Run quantitative RAG benchmark report (writes eval_results.json)
+python eval_rag.py
+
+# Launch interactive Streamlit app
 streamlit run app.py
 ```
-Open `http://localhost:8501` in your browser.
 
 ---
 
-## 🧪 Verification & Retrieval Test Results
+## Quantitative RAG Evaluation Results (`eval_rag.py`)
 
-| Test Case | Target Query | Top Retrieved Source | Relevance Score | Status |
-| :--- | :--- | :--- | :--- | :--- |
-| **Test 1** | *"Solving housing shortage and home ownership"* | `Home Ownership for the People Scheme (1964)` | `0.38` | `PASSED` |
-| **Test 2** | *"Technological adaptation & automation"* | `Lifelong Education & Knowledge Economy (1999)` | `0.31` | `PASSED` |
-| **Test 3** | *"Eliminating corruption & rule of law"* | `Zero Tolerance for Corruption & CPIB (1986)` | `0.41` | `PASSED` |
-| **Test 4** | *"Leadership recruitment & scholarships"* | `Ruthless Meritocracy in Leadership (1971)` | `0.35` | `PASSED` |
+Evaluated over **12 historical policy queries** and **3 adversarial out-of-domain queries** (`ood_min_score = 0.12`) across a 12-document, 445-term indexed corpus:
+
+| Metric | Score | Target Threshold | Status |
+| :--- | :--- | :--- | :--- |
+| **Hit Rate@1 (Top-1 Accuracy)** | `100.00%` (12/12) | `>= 85.0%` | `PASS` |
+| **Hit Rate@3 (Top-3 Recall)** | `100.00%` (12/12) | `>= 95.0%` | `PASS` |
+| **Mean Reciprocal Rank (MRR)** | `1.0000` | `>= 0.9000` | `PASS` |
+| **Out-of-Domain Rejection Rate** | `100.00%` (3/3) | `100.0%` | `PASS` |
+| **Citation Faithfulness Rate** | `100.00%` (12/12) | `>= 90.0%` | `PASS` |
 
 ---
 
-## 👨‍💻 Author & Attribution
+## Author
 
-- **Author**: **M. Athallah Rafif Aldera, S.Kom.**
-- **Degree**: B.S. in Computer Systems, Faculty of Computer Science, **Universitas Sriwijaya (UNSRI)** (GPA: 3.77 / 4.00)
+- **Author**: M. Athallah Rafif Aldera, S.Kom.
+- **Education**: B.S. in Computer Systems, Universitas Sriwijaya (GPA: 3.77 / 4.00)
 - **Portfolio**: [https://aral3000.github.io](https://aral3000.github.io)
 - **GitHub**: [@aral3000](https://github.com/aral3000)
-- **Assessment Target**: 99 Group (PT. Web Marketing Indonesia) AI Engineer Program
-- **License**: MIT License
+- **License**: MIT

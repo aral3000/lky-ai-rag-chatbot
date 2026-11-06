@@ -26,6 +26,38 @@ STOP_WORDS = {
 }
 
 
+ACRONYM_EXPANSIONS: Dict[str, Tuple[str, ...]] = {
+    "ai": ("artificial", "intelligence"),
+    "hdb": ("housing", "development", "board"),
+    "cpf": ("central", "provident", "fund"),
+    "cpib": ("corrupt", "practices", "investigation"),
+    "eip": ("ethnic", "integration", "policy"),
+    "mnc": ("multinational", "corporations"),
+    "mncs": ("multinational", "corporations"),
+}
+
+
+def _porter_lite_stem(token: str) -> str:
+    """Lightweight morphological stemmer unifying inflections (automating/automation, enclaves/enclave)."""
+    if len(token) <= 3:
+        return token
+    for suffix, repl in (
+        ("ations", "at"), ("ation", "at"), ("ments", "ment"),
+        ("ities", "iti"), ("izing", "iz"), ("ising", "is"),
+        ("ized", "iz"), ("ised", "is"), ("ting", "t"),
+        ("ning", "n"), ("ling", "l"), ("ing", ""),
+        ("ies", "i"), ("ers", "er"), ("ed", ""), ("es", ""), ("s", ""),
+    ):
+        if token.endswith(suffix) and (len(token) - len(suffix) + len(repl)) >= 4:
+            token = token[: -len(suffix)] + repl
+            break
+    if len(token) > 4 and token.endswith("e"):
+        token = token[:-1]
+    if len(token) > 4 and token.endswith("y"):
+        token = token[:-1] + "i"
+    return token
+
+
 class LKYVectorStore:
     """
     Lightweight, deterministic vectorized vector store with BM25 / Cosine Similarity
@@ -42,12 +74,17 @@ class LKYVectorStore:
             self.load_corpus(corpus_path)
 
     def _tokenize(self, text: str, filter_stops: bool = True) -> List[str]:
-        """Tokenize text into lowercase alphanumeric words, filtering stop words."""
+        """Tokenize text into stemmed alphanumeric terms with domain acronym expansion."""
         raw_tokens = re.findall(r"\b[a-zA-Z0-9_-]{2,}\b", text.lower())
+        expanded: List[str] = []
+        for tok in raw_tokens:
+            expanded.append(tok)
+            if tok in ACRONYM_EXPANSIONS:
+                expanded.extend(ACRONYM_EXPANSIONS[tok])
         if filter_stops:
-            filtered = [t for t in raw_tokens if t not in STOP_WORDS]
-            return filtered if filtered else raw_tokens
-        return raw_tokens
+            filtered = [_porter_lite_stem(t) for t in expanded if t not in STOP_WORDS]
+            return filtered if filtered else [_porter_lite_stem(t) for t in expanded]
+        return [_porter_lite_stem(t) for t in expanded]
 
     def load_corpus(self, corpus_path: str):
         """Loads and indexes JSON corpus."""

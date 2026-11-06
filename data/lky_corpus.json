@@ -40,6 +40,22 @@
     "content": "If you want international capital, you must guarantee predictability and the rule of law. The moment corruption enters the civil service or the judiciary, confidence evaporates and capital flees. We made corruption an unaffordable risk through the Corrupt Practices Investigation Bureau (CPIB) and paid ministers competitive market salaries to attract top talent and eliminate financial compromise. An honest government is Singapore's ultimate competitive moat."
   },
   {
+    "id": "cpf_01",
+    "theme": "Economy & Social Policy",
+    "title": "Central Provident Fund (CPF) vs Welfare Entitlements",
+    "year": 1972,
+    "source": "Lee Kuan Yew, From Third World to First Memoirs on CPF & Welfare, 1972",
+    "content": "Western-style state welfare saps individual work ethic and bankrupts public treasuries through endless populist bidding. Instead of unemployment handouts, we built the Central Provident Fund (CPF) based on compulsory personal savings matched by employers. Each family accumulates real assets for housing, healthcare via Medisave, and retirement. Subsidize education, housing ownership, and healthcare infrastructure, never idle consumption."
+  },
+  {
+    "id": "lang_01",
+    "theme": "Education & Bilingualism",
+    "title": "English as the Neutral Working Language & Mother Tongue Roots",
+    "year": 1966,
+    "source": "Lee Kuan Yew, Speech on Bilingual Education Policy, 1966",
+    "content": "Choosing Chinese, Malay, or Tamil as our sole administrative language would have torn our multiracial society apart. Selecting English as our neutral working language gave no ethnic group an unfair advantage while plugging every Singaporean directly into global science, finance, engineering, and international commerce. Simultaneously, learning one's Mother Tongue in school preserves cultural ballast and moral discipline."
+  },
+  {
     "id": "tech_01",
     "theme": "Technology & Human Capital",
     "title": "Lifelong Education & Technological Adaptation",
@@ -56,11 +72,27 @@
     "content": "In government as in business, second-rate leadership leads to third-rate management and ultimate collapse. We scour the schools, universities, and private sector for the sharpest analytical minds, regardless of family background or race, and grant them top state scholarships. Meritocracy ensures that authority is earned through competence and integrity, not patronage or connections."
   },
   {
+    "id": "water_01",
+    "theme": "Infrastructure & Strategic Autonomy",
+    "title": "Water Security, Desalination & NEWater",
+    "year": 2002,
+    "source": "Lee Kuan Yew, Launch of NEWater Strategic Water Supply Initiative, 2002",
+    "content": "Every other policy bends if someone can turn off your water tap. Strategic vulnerability in water threatened our sovereignty from day one. We turned nearly two-thirds of Singapore's land surface into urban water catchments, mastered membrane reclamation with NEWater, and built desalination plants. Engineering turnkeys converted an existential geopolitical vulnerability into long-term self-sufficiency."
+  },
+  {
     "id": "geo_01",
     "theme": "Geopolitics & Strategy",
     "title": "Pragmatic Realism in a Dangerous World",
     "year": 2005,
     "source": "Lee Kuan Yew, Memoirs & Foreign Policy Lectures, 2005",
     "content": "A small nation cannot afford foreign policy dogmatism or moral posturing. We must see the world as it is, not as we wish it to be. We maintain deep strategic defense relations with major powers, invest heavily in the Singapore Armed Forces (SAF) as a deterrent poison shrimp, and remain an indispensable neutral hub for trade, maritime logistics, and international diplomacy."
+  },
+  {
+    "id": "asean_01",
+    "theme": "Geopolitics & Strategy",
+    "title": "Navigating US-China Strategic Competition in Asia",
+    "year": 2009,
+    "source": "Lee Kuan Yew, Speech at US-ASEAN Business Council Washington D.C., 2009",
+    "content": "China's economic and military rise will reshape the global balance of power in the twenty-first century, yet Southeast Asian nations do not wish to become vassals of any single hegemon. ASEAN states require continued American economic and naval engagement in the Asia-Pacific to preserve strategic equilibrium, open sea lanes, and room to maneuver without being forced into binary cold-war blocs."
   }
 ]
