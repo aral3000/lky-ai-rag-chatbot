@@ -69,28 +69,34 @@ def generate_lky_response(
             fallback = _offline_persona_synthesis(query, retrieved_docs)
             return f"> *[Vault Notice: {str(e)[:120]}. Falling back to offline grounded persona engine.]*\n\n{fallback}"
 
-    # 2. Google Gemini Provider via stdlib HTTP (Gemini 1.5 Flash)
+    # 2. Google Gemini Provider via stdlib HTTP (Gemini 3 Flash + 3.5 Flash-Lite Quota Fallback)
     if "Gemini" in provider and api_key:
-        try:
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key.strip()}"
-            payload = {
-                "system_instruction": {"parts": [{"text": LKY_SYSTEM_PROMPT}]},
-                "contents": [{"parts": [{"text": prompt}]}],
-                "generationConfig": {"temperature": 0.3, "maxOutputTokens": 600}
-            }
-            req = urllib.request.Request(
-                url,
-                data=json.dumps(payload).encode("utf-8"),
-                headers={"Content-Type": "application/json"},
-                method="POST"
-            )
-            with urllib.request.urlopen(req, timeout=5.0) as resp:
-                data = json.loads(resp.read().decode("utf-8"))
-                text = data["candidates"][0]["content"]["parts"][0]["text"]
-                return "*[Synthesized via Google Gemini 1.5 Flash]*\n\n" + text
-        except Exception as e:
-            fallback = _offline_persona_synthesis(query, retrieved_docs)
-            return f"> *[Gemini API Error: {str(e)[:120]}. Falling back to offline grounded persona engine.]*\n\n{fallback}"
+        last_err = None
+        for model in ("gemini-3-flash-preview", "gemini-3.5-flash-lite"):
+            try:
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key.strip()}"
+                payload = {
+                    "system_instruction": {"parts": [{"text": LKY_SYSTEM_PROMPT}]},
+                    "contents": [{"parts": [{"text": prompt}]}],
+                    "generationConfig": {"temperature": 0.3, "maxOutputTokens": 4096}
+                }
+                req = urllib.request.Request(
+                    url,
+                    data=json.dumps(payload).encode("utf-8"),
+                    headers={"Content-Type": "application/json"},
+                    method="POST"
+                )
+                with urllib.request.urlopen(req, timeout=20.0) as resp:
+                    data = json.loads(resp.read().decode("utf-8"))
+                    parts = data["candidates"][0]["content"].get("parts", [])
+                    text = "".join(str(p["text"]) for p in parts if "text" in p and not p.get("thought")).strip()
+                    if text:
+                        return f"*[Synthesized via Google {model}]*\n\n" + text
+            except Exception as e:
+                last_err = e
+                continue
+        fallback = _offline_persona_synthesis(query, retrieved_docs)
+        return f"> *[Gemini API Error: {str(last_err)[:120]}. Falling back to offline grounded persona engine.]*\n\n{fallback}"
 
     # 3. OpenAI / Compatible Provider via stdlib HTTP
     if "OpenAI" in provider and api_key:

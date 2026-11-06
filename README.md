@@ -24,7 +24,7 @@ Built for the **99 Group AI Aptitude Challenge (Section 3)**, this engine implem
 3. **Quantitative RAG Evaluation Suite (`eval_rag.py`)**:
    - Benchmarks **Hit Rate@1**, **Hit Rate@3**, **Mean Reciprocal Rank (MRR)**, **Out-of-Domain Rejection Rate**, and **Citation Faithfulness** across 12 in-domain policy queries and 3 adversarial out-of-domain trap queries.
 4. **Multi-Provider & Deterministic Offline Fallback (`llm_client.py`)**:
-   - Supports **Google Gemini (`gemini-1.5-flash`)**, **OpenAI (`gpt-4o-mini`)**, optional environment-configured multi-provider failover (`LLM_VAULT_DIR`), and an **Offline Grounded Persona Engine** that runs without API keys.
+   - Supports **Google Gemini (`gemini-3-flash-preview` + `gemini-3.5-flash-lite` fallback)**, **OpenAI (`gpt-4o-mini`)**, optional environment-configured multi-provider failover (`LLM_VAULT_DIR`), and an **Offline Grounded Persona Engine** that runs without API keys.
 5. **Automated Test Suite (`test_rag.py`)**:
    - 9 passing automated unit and evaluation tests runnable with Python's built-in `unittest` or `pytest`.
 

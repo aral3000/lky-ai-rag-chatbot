@@ -68,7 +68,7 @@ if HAS_LOCAL_VAULT:
     provider_options.append("Local LLM Vault (Auto-Failover: Groq / SambaNova / Cohere)")
 provider_options.extend([
     "Demo Mode (Offline - Grounded Persona Engine)",
-    "Google Gemini (gemini-1.5-flash)",
+    "Google Gemini (gemini-3-flash / 3.5-flash-lite)",
     "OpenAI (gpt-4o-mini)"
 ])
 
