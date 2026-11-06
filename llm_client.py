@@ -25,13 +25,13 @@ if VAULT_DIR and os.path.isdir(VAULT_DIR):
         HAS_LOCAL_VAULT = False
 
 LKY_SYSTEM_PROMPT = """You are Lee Kuan Yew, Founding Prime Minister of Singapore (1923 - 2015).
-You respond to queries regarding leadership, urban planning, housing, economic development, education, technology, and geopolitics strictly through your pragmatic, analytical, and realistic worldview.
+You respond to queries regarding life, personal discipline, family, leadership, urban planning, housing, economic development, education, technology, and geopolitics strictly through your pragmatic, analytical, and realistic worldview.
 
 Persona Directives:
 1. Tone: Pragmatic, direct, articulate, unsentimental, and strategic. Speak in first-person ("In 1964, when we...", "My view is clear:").
-2. Core Principles: Ruthless meritocracy, rule of law, long-term national viability, multiracial cohesion (EIP), asset-building home ownership (HDB/CPF) over consumption handouts, and zero tolerance for corruption (CPIB).
-3. Epistemic Grounding: Reference ONLY real historical Singapore policies and speech years (1959-2015) provided in the context. NEVER cite policies, agencies, or dates after March 2015, and NEVER invent fictional institutes or unverified statistics.
-4. Formatting: Write 180 to 280 words of crisp prose with numbered strategic points where helpful. Do NOT use CJK brackets, horizontal rules, or em-dashes."""
+2. Core Principles: Ruthless meritocracy, rule of law, long-term national viability, multiracial cohesion (EIP), asset-building home ownership (HDB/CPF) over consumption handouts, zero tolerance for corruption (CPIB), and relentless personal discipline.
+3. Epistemic Grounding & Strict Context Boundaries: Reference ONLY the historical policies, memoirs, and speech years (1959-2015) explicitly present in the provided Historical Source Context. NEVER introduce external programs, dates, or acronyms not present in the retrieved excerpts, and NEVER cite events after March 2015. If no speeches met the relevance threshold, state clearly that the query falls outside your archival record before giving a concise principle-based reply.
+4. Formatting: Write 180 to 260 words of crisp prose with numbered points where helpful. Do NOT use CJK brackets, horizontal rules, or em-dashes."""
 
 
 def generate_lky_response(
@@ -139,8 +139,9 @@ def _offline_persona_synthesis(query: str, retrieved_docs: List[Tuple[Dict[str, 
     """
     if not retrieved_docs:
         return (
-            f"Regarding '{query}', you must approach this with unvarnished realism. "
-            f"The world does not owe anyone a living. First, analyze the empirical facts, not sentimental wishes. "
+            f"This topic regarding '{query}' falls outside my historical archival record (1959-2015). "
+            f"Speaking strictly from first principles: the world does not owe anyone a living. "
+            f"First, analyze empirical facts rather than sentimental wishes. "
             f"Second, build institutions anchored on integrity, competence, and ruthless meritocracy."
         )
 
@@ -156,6 +157,11 @@ def _offline_persona_synthesis(query: str, retrieved_docs: List[Tuple[Dict[str, 
             f"On the subject of '{query}', our experience in building modern Singapore provides a definitive answer: "
             f"citizens must have a tangible stake in their nation. When we formulated the '{title}' ({year}), "
             f"we knew that property ownership is the bedrock of social stability."
+        )
+    elif "Life" in theme or "Personal" in theme:
+        opening = (
+            f"On the personal question of '{query}', my reflections in '{title}' ({year}) are direct: "
+            f"character, daily self-discipline, and emotional steadiness determine how a person endures life's tests."
         )
     elif "Technology" in theme or "Human Capital" in theme:
         opening = (

@@ -1,40 +1,71 @@
 {
-  "corpus_size": 12,
-  "vocabulary_size": 424,
-  "in_domain_queries": 12,
-  "out_of_domain_queries": 3,
+  "corpus_size": 16,
+  "vocabulary_size": 551,
+  "in_domain_queries": 20,
+  "out_of_domain_queries": 4,
   "metrics": {
     "hit_rate_at_1": 1.0,
     "hit_rate_at_3": 1.0,
     "mrr": 1.0,
     "ood_rejection_rate": 1.0,
-    "citation_faithfulness_rate": 1.0
+    "ood_abstention_rate": 1.0,
+    "citation_faithfulness_rate": 1.0,
+    "temporal_guardrail_rate": 1.0,
+    "persona_voice_rate": 1.0,
+    "live_transcript_guardrail_rate": 1.0
+  },
+  "slice_metrics": {
+    "policy_geopolitics": {
+      "queries": 12,
+      "hit_rate_at_1": 1.0,
+      "hit_rate_at_3": 1.0,
+      "mrr": 1.0
+    },
+    "life_philosophy": {
+      "queries": 4,
+      "hit_rate_at_1": 1.0,
+      "hit_rate_at_3": 1.0,
+      "mrr": 1.0
+    },
+    "paraphrased_low_overlap": {
+      "queries": 4,
+      "hit_rate_at_1": 1.0,
+      "hit_rate_at_3": 1.0,
+      "mrr": 1.0
+    }
   },
   "details": [
     {
+      "slice": "policy_geopolitics",
       "query": "How did Singapore enable 90% public home ownership through HDB flats?",
       "expected_id": "hdb_01",
       "retrieved_ids": [
         "hdb_01",
         "hdb_03",
-        "cpf_01"
+        "life_01"
       ],
-      "top_score": 0.5285,
+      "top_score": 0.5506,
       "rank": 1,
-      "citation_faithful": true
+      "citation_faithful": true,
+      "temporal_guardrail_pass": true,
+      "persona_voice_pass": true
     },
     {
+      "slice": "policy_geopolitics",
       "query": "Why did you plant trees and reclaim land in a dense high-rise city?",
       "expected_id": "hdb_02",
       "retrieved_ids": [
         "hdb_02",
         "water_01"
       ],
-      "top_score": 0.396,
+      "top_score": 0.3526,
       "rank": 1,
-      "citation_faithful": true
+      "citation_faithful": true,
+      "temporal_guardrail_pass": true,
+      "persona_voice_pass": true
     },
     {
+      "slice": "policy_geopolitics",
       "query": "How do you prevent racial enclaves in public housing neighborhoods?",
       "expected_id": "hdb_03",
       "retrieved_ids": [
@@ -42,104 +73,236 @@
         "hdb_01",
         "cpf_01"
       ],
-      "top_score": 0.3005,
+      "top_score": 0.2966,
       "rank": 1,
-      "citation_faithful": true
+      "citation_faithful": true,
+      "temporal_guardrail_pass": true,
+      "persona_voice_pass": true
     },
     {
+      "slice": "policy_geopolitics",
       "query": "How can a small island with no hinterland industrialize using MNCs?",
       "expected_id": "econ_01",
       "retrieved_ids": [
-        "econ_01",
-        "geo_01",
-        "water_01"
+        "econ_01"
       ],
-      "top_score": 0.5152,
+      "top_score": 0.4559,
       "rank": 1,
-      "citation_faithful": true
+      "citation_faithful": true,
+      "temporal_guardrail_pass": true,
+      "persona_voice_pass": true
     },
     {
+      "slice": "policy_geopolitics",
       "query": "How do you eradicate civil service corruption and enforce rule of law?",
       "expected_id": "econ_02",
       "retrieved_ids": [
         "econ_02"
       ],
-      "top_score": 0.4845,
+      "top_score": 0.4029,
       "rank": 1,
-      "citation_faithful": true
+      "citation_faithful": true,
+      "temporal_guardrail_pass": true,
+      "persona_voice_pass": true
     },
     {
+      "slice": "policy_geopolitics",
       "query": "Should governments fund unemployment handouts or compulsory CPF savings?",
       "expected_id": "cpf_01",
       "retrieved_ids": [
         "cpf_01",
         "hdb_01"
       ],
-      "top_score": 0.5996,
+      "top_score": 0.6708,
       "rank": 1,
-      "citation_faithful": true
+      "citation_faithful": true,
+      "temporal_guardrail_pass": true,
+      "persona_voice_pass": true
     },
     {
+      "slice": "policy_geopolitics",
       "query": "Why choose English as the working language alongside Mother Tongue?",
       "expected_id": "lang_01",
       "retrieved_ids": [
         "lang_01"
       ],
-      "top_score": 0.6215,
+      "top_score": 0.5478,
       "rank": 1,
-      "citation_faithful": true
+      "citation_faithful": true,
+      "temporal_guardrail_pass": true,
+      "persona_voice_pass": true
     },
     {
+      "slice": "policy_geopolitics",
       "query": "How should workers adapt to automation and artificial intelligence?",
       "expected_id": "tech_01",
       "retrieved_ids": [
         "tech_01"
       ],
-      "top_score": 0.3098,
+      "top_score": 0.2196,
       "rank": 1,
-      "citation_faithful": true
+      "citation_faithful": true,
+      "temporal_guardrail_pass": true,
+      "persona_voice_pass": true
     },
     {
+      "slice": "policy_geopolitics",
       "query": "How should a country recruit and promote top talent into public leadership?",
       "expected_id": "gov_01",
       "retrieved_ids": [
         "gov_01",
-        "hdb_01",
-        "econ_02"
+        "econ_02",
+        "hdb_01"
       ],
-      "top_score": 0.2051,
+      "top_score": 0.1603,
       "rank": 1,
-      "citation_faithful": true
+      "citation_faithful": true,
+      "temporal_guardrail_pass": true,
+      "persona_voice_pass": true
     },
     {
+      "slice": "policy_geopolitics",
       "query": "How did Singapore overcome water supply vulnerability with NEWater?",
       "expected_id": "water_01",
       "retrieved_ids": [
         "water_01"
       ],
-      "top_score": 0.5805,
+      "top_score": 0.4228,
       "rank": 1,
-      "citation_faithful": true
+      "citation_faithful": true,
+      "temporal_guardrail_pass": true,
+      "persona_voice_pass": true
     },
     {
+      "slice": "policy_geopolitics",
       "query": "How does a small state deter larger neighbors with a poison shrimp defense?",
       "expected_id": "geo_01",
       "retrieved_ids": [
         "geo_01"
       ],
-      "top_score": 0.258,
+      "top_score": 0.2089,
       "rank": 1,
-      "citation_faithful": true
+      "citation_faithful": true,
+      "temporal_guardrail_pass": true,
+      "persona_voice_pass": true
     },
     {
+      "slice": "policy_geopolitics",
       "query": "How should ASEAN balance the rise of China and American presence in Asia?",
       "expected_id": "asean_01",
       "retrieved_ids": [
         "asean_01"
       ],
-      "top_score": 0.3574,
+      "top_score": 0.3191,
       "rank": 1,
-      "citation_faithful": true
+      "citation_faithful": true,
+      "temporal_guardrail_pass": true,
+      "persona_voice_pass": true
+    },
+    {
+      "slice": "life_philosophy",
+      "query": "What made your marriage to Kwa Geok Choo last and how did you raise your children?",
+      "expected_id": "life_01",
+      "retrieved_ids": [
+        "life_01"
+      ],
+      "top_score": 0.3977,
+      "rank": 1,
+      "citation_faithful": true,
+      "temporal_guardrail_pass": true,
+      "persona_voice_pass": true
+    },
+    {
+      "slice": "life_philosophy",
+      "query": "What was your daily physical exercise, sleep, and meditation routine?",
+      "expected_id": "life_02",
+      "retrieved_ids": [
+        "life_02"
+      ],
+      "top_score": 0.3804,
+      "rank": 1,
+      "citation_faithful": true,
+      "temporal_guardrail_pass": true,
+      "persona_voice_pass": true
+    },
+    {
+      "slice": "life_philosophy",
+      "query": "How should a person face grief, bereavement, aging, and mortality?",
+      "expected_id": "life_03",
+      "retrieved_ids": [
+        "life_03"
+      ],
+      "top_score": 0.327,
+      "rank": 1,
+      "citation_faithful": true,
+      "temporal_guardrail_pass": true,
+      "persona_voice_pass": true
+    },
+    {
+      "slice": "life_philosophy",
+      "query": "What is your advice to young people on ambition, character, and overcoming failure?",
+      "expected_id": "life_04",
+      "retrieved_ids": [
+        "life_04"
+      ],
+      "top_score": 0.3757,
+      "rank": 1,
+      "citation_faithful": true,
+      "temporal_guardrail_pass": true,
+      "persona_voice_pass": true
+    },
+    {
+      "slice": "paraphrased_low_overlap",
+      "query": "How do you stop bribery and graft among government officials?",
+      "expected_id": "econ_02",
+      "retrieved_ids": [
+        "econ_02"
+      ],
+      "top_score": 0.3878,
+      "rank": 1,
+      "citation_faithful": true,
+      "temporal_guardrail_pass": true,
+      "persona_voice_pass": true
+    },
+    {
+      "slice": "paraphrased_low_overlap",
+      "query": "What is the secret to a lifelong partnership with your wife?",
+      "expected_id": "life_01",
+      "retrieved_ids": [
+        "life_01",
+        "tech_01"
+      ],
+      "top_score": 0.281,
+      "rank": 1,
+      "citation_faithful": true,
+      "temporal_guardrail_pass": true,
+      "persona_voice_pass": true
+    },
+    {
+      "slice": "paraphrased_low_overlap",
+      "query": "How does a leader avoid burnout and stay fit under decades of stress?",
+      "expected_id": "life_02",
+      "retrieved_ids": [
+        "life_02"
+      ],
+      "top_score": 0.2866,
+      "rank": 1,
+      "citation_faithful": true,
+      "temporal_guardrail_pass": true,
+      "persona_voice_pass": true
+    },
+    {
+      "slice": "paraphrased_low_overlap",
+      "query": "How do you stop minority segregation and ghettos in apartment blocks?",
+      "expected_id": "hdb_03",
+      "retrieved_ids": [
+        "hdb_03"
+      ],
+      "top_score": 0.4297,
+      "rank": 1,
+      "citation_faithful": true,
+      "temporal_guardrail_pass": true,
+      "persona_voice_pass": true
     }
   ]
 }

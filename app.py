@@ -122,18 +122,22 @@ if "pending_query" not in st.session_state:
 
 # Preset Quick-Prompt Buttons
 st.markdown("**Quick Prompts (Click to explore):**")
-c1, c2, c3 = st.columns(3)
+c1, c2, c3, c4 = st.columns(4)
 with c1:
-    if st.button("🏢 HDB & Public Home Ownership", use_container_width=True):
+    if st.button("🏢 HDB & Home Ownership", use_container_width=True):
         st.session_state.pending_query = "Why did you prioritize public home ownership through HDB and CPF over public rental housing?"
         st.rerun()
 with c2:
-    if st.button("🤖 AI & Technological Disruption", use_container_width=True):
+    if st.button("🤖 AI & Disruption", use_container_width=True):
         st.session_state.pending_query = "How should leaders and nations adapt to artificial intelligence and automation without causing massive unemployment?"
         st.rerun()
 with c3:
-    if st.button("⚖️ Meritocracy & Anti-Corruption", use_container_width=True):
+    if st.button("⚖️ Meritocracy & CPIB", use_container_width=True):
         st.session_state.pending_query = "What is your stance on eliminating corruption and ensuring meritocratic leadership in governance?"
+        st.rerun()
+with c4:
+    if st.button("🧭 Life, Family & Discipline", use_container_width=True):
+        st.session_state.pending_query = "How did you balance decades of political pressure with marriage, family, and daily physical discipline?"
         st.rerun()
 
 # Chat History State

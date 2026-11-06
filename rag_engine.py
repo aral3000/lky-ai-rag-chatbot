@@ -27,13 +27,25 @@ STOP_WORDS = {
 
 
 ACRONYM_EXPANSIONS: Dict[str, Tuple[str, ...]] = {
-    "ai": ("artificial", "intelligence"),
-    "hdb": ("housing", "development", "board"),
-    "cpf": ("central", "provident", "fund"),
-    "cpib": ("corrupt", "practices", "investigation"),
-    "eip": ("ethnic", "integration", "policy"),
-    "mnc": ("multinational", "corporations"),
-    "mncs": ("multinational", "corporations"),
+    "ai": ("artificial", "intelligence", "automation", "technology"),
+    "hdb": ("housing", "development", "board", "home", "ownership", "flats"),
+    "cpf": ("central", "provident", "fund", "savings", "retirement"),
+    "cpib": ("corrupt", "practices", "investigation", "corruption"),
+    "eip": ("ethnic", "integration", "policy", "enclaves", "multiracial"),
+    "mnc": ("multinational", "corporations", "industrial"),
+    "mncs": ("multinational", "corporations", "industrial"),
+    "bribery": ("corruption", "corrupt", "cpib", "honest"),
+    "graft": ("corruption", "corrupt", "cpib", "honest"),
+    "segregation": ("enclaves", "ethnic", "integration", "quotas"),
+    "ghettos": ("enclaves", "ethnic", "integration", "quotas"),
+    "wife": ("marriage", "kwa", "geok", "choo", "family", "partnership"),
+    "spouse": ("marriage", "kwa", "geok", "choo", "family", "partnership"),
+    "workout": ("physical", "exercise", "swimming", "running", "regimen"),
+    "fitness": ("physical", "exercise", "swimming", "running", "regimen"),
+    "burnout": ("physical", "exercise", "sleep", "meditation", "stamina"),
+    "death": ("mortality", "grief", "bereavement", "aging", "stoic"),
+    "dying": ("mortality", "grief", "bereavement", "aging", "stoic"),
+    "career": ("young", "vocation", "competence", "resilience", "character"),
 }
 
 
@@ -141,17 +153,21 @@ class LKYVectorStore:
         tokens = self._tokenize(query, filter_stops=True)
         q_vec = np.zeros(len(self.vocabulary), dtype=np.float32)
         matched_any = False
+        oov_count = 0
         for t in tokens:
             if t in self.vocabulary:
                 q_vec[self.vocabulary[t]] += 1.0
                 matched_any = True
+            else:
+                oov_count += 1
 
         if not matched_any:
             # No vocabulary overlap found
             return []
 
         q_vec *= self.idf
-        q_norm = np.linalg.norm(q_vec)
+        oov_idf = math.log((len(self.documents) + 1) / 1.0) + 1.0
+        q_norm = math.sqrt(float(np.dot(q_vec, q_vec)) + oov_count * (oov_idf ** 2))
         if q_norm > 0:
             q_vec /= q_norm
         else:

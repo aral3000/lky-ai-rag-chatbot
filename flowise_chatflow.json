@@ -1,0 +1,163 @@
+{
+  "name": "LKY-AI RAG Persona Chatflow (1959-2015 Archival Speeches & Memoirs)",
+  "description": "Exported Flowise v2 Chatflow JSON mirroring the Python LKYVectorStore RAG pipeline: loads data/lky_corpus.json, chunks & indexes embeddings in MemoryVectorStore, and synthesizes grounded first-person Lee Kuan Yew responses via Gemini 3 Flash with strict temporal guardrails (<=2015).",
+  "nodes": [
+    {
+      "id": "jsonFile_0",
+      "position": { "x": 80, "y": 120 },
+      "type": "customNode",
+      "data": {
+        "id": "jsonFile_0",
+        "label": "JSON File Loader (lky_corpus.json)",
+        "version": 1,
+        "name": "jsonFile",
+        "type": "Document",
+        "baseClasses": ["Document"],
+        "category": "Document Loaders",
+        "inputs": {
+          "jsonFile": "data/lky_corpus.json",
+          "pointersName": "content",
+          "metadata": "{\"source\": \"Lee Kuan Yew Archival Corpus (1964-2013)\"}"
+        }
+      }
+    },
+    {
+      "id": "recursiveSplitter_0",
+      "position": { "x": 80, "y": 340 },
+      "type": "customNode",
+      "data": {
+        "id": "recursiveSplitter_0",
+        "label": "Recursive Character Text Splitter",
+        "version": 2,
+        "name": "recursiveCharacterTextSplitter",
+        "type": "RecursiveCharacterTextSplitter",
+        "baseClasses": ["RecursiveCharacterTextSplitter", "TextSplitter"],
+        "category": "Text Splitters",
+        "inputs": {
+          "chunkSize": 600,
+          "chunkOverlap": 60
+        }
+      }
+    },
+    {
+      "id": "googleEmbeddings_0",
+      "position": { "x": 420, "y": 380 },
+      "type": "customNode",
+      "data": {
+        "id": "googleEmbeddings_0",
+        "label": "Google Generative AI Embeddings",
+        "version": 1,
+        "name": "googleGenerativeAiEmbeddings",
+        "type": "GoogleGenerativeAiEmbeddings",
+        "baseClasses": ["GoogleGenerativeAiEmbeddings", "Embeddings"],
+        "category": "Embeddings",
+        "credential": "CONFIGURE_GOOGLE_GEMINI_CREDENTIAL",
+        "inputs": {
+          "modelName": "text-embedding-004"
+        }
+      }
+    },
+    {
+      "id": "memoryVectorStore_0",
+      "position": { "x": 420, "y": 140 },
+      "type": "customNode",
+      "data": {
+        "id": "memoryVectorStore_0",
+        "label": "In-Memory Vector Store (Top-K Cosine)",
+        "version": 1,
+        "name": "memoryVectorStore",
+        "type": "Memory",
+        "baseClasses": ["Memory", "VectorStoreRetriever", "BaseRetriever"],
+        "category": "Vector Stores",
+        "inputs": {
+          "document": "{{jsonFile_0.data.instance}}",
+          "textSplitter": "{{recursiveSplitter_0.data.instance}}",
+          "embeddings": "{{googleEmbeddings_0.data.instance}}",
+          "topK": 3
+        }
+      }
+    },
+    {
+      "id": "chatGoogleGenerativeAI_0",
+      "position": { "x": 780, "y": 380 },
+      "type": "customNode",
+      "data": {
+        "id": "chatGoogleGenerativeAI_0",
+        "label": "ChatGoogleGenerativeAI (Gemini 3 Flash)",
+        "version": 2,
+        "name": "chatGoogleGenerativeAI",
+        "type": "ChatGoogleGenerativeAI",
+        "baseClasses": ["ChatGoogleGenerativeAI", "BaseChatModel", "BaseLLM"],
+        "category": "Chat Models",
+        "credential": "CONFIGURE_GOOGLE_GEMINI_CREDENTIAL",
+        "inputs": {
+          "modelName": "gemini-3-flash-preview",
+          "temperature": 0.3,
+          "maxOutputTokens": 4096
+        }
+      }
+    },
+    {
+      "id": "conversationalRetrievalQAChain_0",
+      "position": { "x": 780, "y": 140 },
+      "type": "customNode",
+      "data": {
+        "id": "conversationalRetrievalQAChain_0",
+        "label": "Conversational Retrieval QA Chain (LKY Persona)",
+        "version": 3,
+        "name": "conversationalRetrievalQAChain",
+        "type": "ConversationalRetrievalQAChain",
+        "baseClasses": ["ConversationalRetrievalQAChain", "BaseChain"],
+        "category": "Chains",
+        "inputs": {
+          "model": "{{chatGoogleGenerativeAI_0.data.instance}}",
+          "vectorStoreRetriever": "{{memoryVectorStore_0.data.instance}}",
+          "returnSourceDocuments": true,
+          "systemMessagePrompt": "You are Lee Kuan Yew, Founding Prime Minister of Singapore (1923 - 2015). Respond to queries regarding life, personal discipline, family, leadership, urban planning, housing, economic development, education, technology, and geopolitics strictly through your pragmatic, analytical, and realistic worldview. Speak in first-person, cite only historical policies and speech years (1959-2015) present in the retrieved context, never cite events after March 2015, and write 180 to 260 words with zero em-dashes."
+        }
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "recursiveSplitter_0",
+      "sourceHandle": "recursiveSplitter_0-output-recursiveCharacterTextSplitter-RecursiveCharacterTextSplitter|TextSplitter",
+      "target": "jsonFile_0",
+      "targetHandle": "jsonFile_0-input-textSplitter-TextSplitter",
+      "type": "buttonedge",
+      "id": "edge_splitter_to_json"
+    },
+    {
+      "source": "jsonFile_0",
+      "sourceHandle": "jsonFile_0-output-document-Document",
+      "target": "memoryVectorStore_0",
+      "targetHandle": "memoryVectorStore_0-input-document-Document",
+      "type": "buttonedge",
+      "id": "edge_json_to_vectorstore"
+    },
+    {
+      "source": "googleEmbeddings_0",
+      "sourceHandle": "googleEmbeddings_0-output-googleGenerativeAiEmbeddings-GoogleGenerativeAiEmbeddings|Embeddings",
+      "target": "memoryVectorStore_0",
+      "targetHandle": "memoryVectorStore_0-input-embeddings-Embeddings",
+      "type": "buttonedge",
+      "id": "edge_embeddings_to_vectorstore"
+    },
+    {
+      "source": "memoryVectorStore_0",
+      "sourceHandle": "memoryVectorStore_0-output-retriever-Memory|VectorStoreRetriever|BaseRetriever",
+      "target": "conversationalRetrievalQAChain_0",
+      "targetHandle": "conversationalRetrievalQAChain_0-input-vectorStoreRetriever-BaseRetriever",
+      "type": "buttonedge",
+      "id": "edge_vectorstore_to_chain"
+    },
+    {
+      "source": "chatGoogleGenerativeAI_0",
+      "sourceHandle": "chatGoogleGenerativeAI_0-output-chatGoogleGenerativeAI-ChatGoogleGenerativeAI|BaseChatModel|BaseLLM",
+      "target": "conversationalRetrievalQAChain_0",
+      "targetHandle": "conversationalRetrievalQAChain_0-input-model-BaseChatModel",
+      "type": "buttonedge",
+      "id": "edge_model_to_chain"
+    }
+  ]
+}
